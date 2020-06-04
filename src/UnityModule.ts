@@ -13,18 +13,18 @@ export interface UnityModule {
     /**
      * Return whether is unity ready.
      */
-    isReady (): Promise<boolean>;
+    isReady(): Promise<boolean>;
 
     /**
      * Manual init the Unity. Usually Unity is auto created when the first view is added.
      */
-    createUnity (): Promise<boolean>;
+    createUnity(): Promise<boolean>;
 
     /**
      * Send Message to UnityMessageManager.
      * @param message The message will post.
      */
-    postMessageToUnityManager (message: string | UnityViewMessage): void;
+    postMessageToUnityManager(message: string | UnityViewMessage): void;
 
     /**
      * Send Message to Unity.
@@ -32,42 +32,47 @@ export interface UnityModule {
      * @param methodName Method name in GameObject instance.
      * @param message The message will post.
      */
-    postMessage (gameObject: string, methodName: string, message: string): void;
+    postMessage(gameObject: string, methodName: string, message: string): void;
 
     /**
      * Pause the unity player
      */
-    pause (): void;
+    pause(): void;
 
     /**
      * Pause the unity player
      */
-    resume (): void;
+    resume(): void;
+
+    /**
+     * Unload the unity player
+     */
+    unload(): void;
 
     /**
      * Receive string and json message from unity.
      */
-    addMessageListener (listener: (message: string | MessageHandler) => void): number;
+    addMessageListener(listener: (message: string | MessageHandler) => void): number;
 
     /**
      * Only receive string message from unity.
      */
-    addStringMessageListener (listener: (message: string) => void): number;
+    addStringMessageListener(listener: (message: string) => void): number;
 
     /**
      * Only receive json message from unity.
      */
-    addUnityMessageListener (listener: (handler: MessageHandler) => void): number;
+    addUnityMessageListener(listener: (handler: MessageHandler) => void): number;
 
     /**
      * Remove message listener.
      */
-    removeMessageListener (handleId: number): void;
+    removeMessageListener(handleId: number): void;
 }
 
 let sequence = 0
 
-function generateId () {
+function generateId() {
     sequence = sequence + 1
     return sequence
 }
@@ -76,7 +81,7 @@ const waitCallbackMessageMap: {
     [id: number]: UnityViewMessage
 } = {}
 
-function handleMessage (message: string) {
+function handleMessage(message: string) {
     if (MessageHandler.isUnityMessage(message)) {
         const handler = MessageHandler.deserialize(message)
         if (handler.seq === 'end') {
@@ -104,19 +109,19 @@ class UnityModuleImpl implements UnityModule {
         [hid: number]: (message: MessageHandler) => void
     }
 
-    constructor () {
+    constructor() {
         this.createListeners()
     }
 
-    public async isReady () {
+    public async isReady() {
         return UnityNativeModule.isReady()
     }
 
-    public async createUnity () {
+    public async createUnity() {
         return UnityNativeModule.createUnity()
     }
 
-    public postMessageToUnityManager (message: string | UnityViewMessage) {
+    public postMessageToUnityManager(message: string | UnityViewMessage) {
         if (typeof message === 'string') {
             this.postMessage('UnityMessageManager', 'onMessage', message)
         } else {
@@ -133,38 +138,42 @@ class UnityModuleImpl implements UnityModule {
         }
     }
 
-    public postMessage (gameObject: string, methodName: string, message: string) {
+    public postMessage(gameObject: string, methodName: string, message: string) {
         UnityNativeModule.postMessage(gameObject, methodName, message)
     }
 
-    public pause () {
+    public pause() {
         UnityNativeModule.pause()
     }
 
-    public resume () {
+    public resume() {
         UnityNativeModule.resume()
     }
 
-    public addMessageListener (listener: (handler: string | MessageHandler) => void) {
+    public unload() {
+        UnityNativeModule.unload()
+    }
+
+    public addMessageListener(listener: (handler: string | MessageHandler) => void) {
         const id = this.getHandleId()
         this.stringListeners[id] = listener
         this.unityMessageListeners[id] = listener
         return id
     }
 
-    public addStringMessageListener (listener: (message: string) => void) {
+    public addStringMessageListener(listener: (message: string) => void) {
         const id = this.getHandleId()
         this.stringListeners[id] = listener
         return id
     }
 
-    public addUnityMessageListener (listener: (handler: MessageHandler) => void) {
+    public addUnityMessageListener(listener: (handler: MessageHandler) => void) {
         const id = this.getHandleId()
         this.unityMessageListeners[id] = listener
         return id
     }
 
-    public removeMessageListener (handleId: number) {
+    public removeMessageListener(handleId: number) {
         if (this.unityMessageListeners[handleId]) {
             delete this.unityMessageListeners[handleId]
         }
@@ -173,7 +182,7 @@ class UnityModuleImpl implements UnityModule {
         }
     }
 
-    private createListeners () {
+    private createListeners() {
         this.stringListeners = {}
         this.unityMessageListeners = {}
         DeviceEventEmitter.addListener('onUnityMessage', message => {
@@ -191,7 +200,7 @@ class UnityModuleImpl implements UnityModule {
         })
     }
 
-    private getHandleId () {
+    private getHandleId() {
         this.hid = this.hid + 1
         return this.hid
     }

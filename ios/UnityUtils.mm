@@ -155,8 +155,8 @@ static BOOL _isUnityReady = NO;
         UIApplication* application = [UIApplication sharedApplication];
 
         // Always keep RN window in top
-        // This causes a problem in alerts
-        // application.keyWindow.windowLevel = UIWindowLevelNormal + 1;
+        // This causes a problem in alerts when windows is hidden behind something else
+        application.keyWindow.windowLevel = UIWindowLevelNormal + 1;
 
         InitUnity();
 
