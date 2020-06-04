@@ -63,6 +63,8 @@ extern "C" void UnityPostMessage(NSString* gameObject, NSString* methodName, NSS
 extern "C" void UnityPauseCommand()
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        UIApplication* application = [UIApplication sharedApplication];
+        application.keyWindow.windowLevel = UIWindowLevelNormal;
         [ufw pause:true];
     });
 }
@@ -70,7 +72,16 @@ extern "C" void UnityPauseCommand()
 extern "C" void UnityResumeCommand()
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        UIApplication* application = [UIApplication sharedApplication];
+        application.keyWindow.windowLevel = UIWindowLevelNormal + 1;
         [ufw pause:false];
+    });
+}
+
+extern "C" void UnityUnloadCommand()
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [ufw unloadApplication];
     });
 }
 
