@@ -5,25 +5,27 @@
 #define UnityUtils_h
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-void InitArgs(int argc, char* argv[]);
+    void InitArgs(int argc, char *argv[]);
 
-bool UnityIsInited(void);
+    bool UnityIsInited(void);
 
-void InitUnity();
+    void InitUnity();
 
-void UnityPostMessage(NSString* gameObject, NSString* methodName, NSString* message);
+    void UnityPostMessage(NSString *gameObject, NSString *methodName, NSString *message);
 
-void UnityPauseCommand();
+    void UnityPauseCommand();
 
-void UnityResumeCommand();
+    void UnityResumeCommand();
+
+    void UnityUnloadCommand();
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
-
 
 @interface UnityUtils : NSObject
 
