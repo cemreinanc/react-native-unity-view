@@ -9,11 +9,14 @@ __*If you're using a Unity version older than 2019.3 you can only export to andr
 This is a fork of [https://github.com/f111fei/react-native-unity-view](https://github.com/f111fei/react-native-unity-view)
 to make it work with React Native >= 0.60.
 
+This is a fork of [https://github.com/asmadsen/react-native-unity-view](https://github.com/asmadsen/react-native-unity-view)
+to make it work iOS Alerts.
+
 **This project may or may not be updated depending on the further use of it at my workplace, however feel free to fork it** 
 
 ## Install
 
-`yarn add @asmadsen/react-native-unity-view`
+`yarn add ssh://git@github.com:cemreinanc/react-native-unity-view.git`
 
 ## Configuration
 
